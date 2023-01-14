@@ -3,15 +3,18 @@
     windows_subsystem = "windows"
 )]
 
-// Learn more about Tauri commands at https://tauri.app/v1/guides/features/command
+use dotenv::dotenv;
+use std::env;
+
 #[tauri::command]
-fn greet(name: &str) -> String {
-    format!("Hello, {}! You've been greeted from Rust!", name)
+fn client_id() -> String {
+    return env::var("INSTAGRAM_CLIENT_ID").expect("Failed to get the client ID.");
 }
 
 fn main() {
+    dotenv().ok();
     tauri::Builder::default()
-        .invoke_handler(tauri::generate_handler![greet])
+        .invoke_handler(tauri::generate_handler![client_id])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }
