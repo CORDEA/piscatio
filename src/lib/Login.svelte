@@ -1,6 +1,7 @@
 <script lang="ts">
   import { invoke } from "@tauri-apps/api/tauri"
   import { open } from "@tauri-apps/api/shell"
+  import { Body, getClient, ResponseType } from "@tauri-apps/api/http"
 
   const AuthorizeUrl = "https://api.instagram.com/"
   const AuthorizePath = "oauth/authorize"
@@ -22,6 +23,25 @@
   }
 
   async function login() {
+    const url = new URL(redirectUri)
+    const code = url.searchParams.get("code")
+    const clientId: string = await invoke("client_id")
+    const clientSecret: string = await invoke("client_secret")
+    const client = await getClient()
+    const response = await client.post(
+      AuthorizeUrl + AccessTokenPath,
+      Body.form({
+        client_id: clientId,
+        client_secret: clientSecret,
+        grant_type: "authorization_code",
+        redirect_uri: RedirectUri,
+        code: code
+      }),
+      {
+        headers: {"Content-Type": "multipart/form-data"},
+        responseType: ResponseType.JSON
+      }
+    )
   }
 </script>
 

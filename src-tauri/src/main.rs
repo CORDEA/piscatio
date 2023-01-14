@@ -11,10 +11,15 @@ fn client_id() -> String {
     return env::var("INSTAGRAM_CLIENT_ID").expect("Failed to get the client ID.");
 }
 
+#[tauri::command]
+fn client_secret() -> String {
+    return env::var("INSTAGRAM_CLIENT_SECRET").expect("Failed to get the client secret.");
+}
+
 fn main() {
     dotenv().ok();
     tauri::Builder::default()
-        .invoke_handler(tauri::generate_handler![client_id])
+        .invoke_handler(tauri::generate_handler![client_id, client_secret])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }
