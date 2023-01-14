@@ -1,7 +1,20 @@
 <script lang="ts">
   import { invoke } from "@tauri-apps/api/tauri"
+  import { open } from "@tauri-apps/api/shell"
+
+  const AuthorizeUrl = "https://api.instagram.com/"
+  const AuthorizePath = "oauth/authorize"
+  const AccessTokenPath = "oauth/access_token"
+  const RedirectUri = "https://localhost/"
 
   async function login(){
+    const url = new URL(AuthorizeUrl + AuthorizePath)
+    const clientId: string = await invoke("client_id")
+    url.searchParams.append("client_id", clientId)
+    url.searchParams.append("redirect_uri", RedirectUri)
+    url.searchParams.append("scope", "user_profile,user_media")
+    url.searchParams.append("response_type", "code")
+    open(url.toString())
   }
 </script>
 
