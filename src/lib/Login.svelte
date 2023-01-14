@@ -7,22 +7,37 @@
   const AccessTokenPath = "oauth/access_token"
   const RedirectUri = "https://localhost/"
 
-  async function login(){
+  let opened = false
+  let redirectUri = ""
+
+  async function openUrl(){
     const url = new URL(AuthorizeUrl + AuthorizePath)
     const clientId: string = await invoke("client_id")
     url.searchParams.append("client_id", clientId)
     url.searchParams.append("redirect_uri", RedirectUri)
     url.searchParams.append("scope", "user_profile,user_media")
     url.searchParams.append("response_type", "code")
-    open(url.toString())
+    await open(url.toString())
+    opened = true;
+  }
+
+  async function login() {
   }
 </script>
 
 <div>
   <div class="row">
-    <button on:click={login}>
-      Log in
-    </button>
+    {#if opened}
+      <input type="text" bind:value={redirectUri} />
+
+      <button on:click={login}>
+        Log in
+      </button>
+    {:else}
+      <button on:click={openUrl}>
+        Start
+      </button>
+    {/if}
   </div>
 </div>
 
@@ -44,5 +59,10 @@ button {
 
 button:hover {
   border-color: #396cd8;
+}
+
+input {
+  padding: 8px;
+  margin-right: 16px;
 }
 </style>
