@@ -1,12 +1,17 @@
 <script lang="ts">
-  import Login from './lib/Login.svelte'
+  import Login from "./lib/Login.svelte"
+  import Home from "./lib/Home.svelte"
+
+  let loggedIn = false;
 </script>
 
 <main class="container">
-  <h1>Welcome to Tauri!</h1>
-
   <div class="row">
-    <Login />
+    {#if loggedIn}
+      <Home />
+    {:else}
+      <Login bind:loggedIn={loggedIn} />
+    {/if}
   </div>
 </main>
 
@@ -17,10 +22,6 @@
   display: flex;
   flex-direction: column;
   justify-content: center;
-  text-align: center;
-}
-
-h1 {
   text-align: center;
 }
 </style>

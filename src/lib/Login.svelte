@@ -2,16 +2,24 @@
   import { invoke } from "@tauri-apps/api/tauri"
   import { open } from "@tauri-apps/api/shell"
   import { Body, getClient, ResponseType } from "@tauri-apps/api/http"
+  import { onMount } from "svelte";
+  import { getToken, putToken } from "./Store"
 
   const AuthorizeUrl = "https://api.instagram.com/"
   const AuthorizePath = "oauth/authorize"
   const AccessTokenPath = "oauth/access_token"
   const RedirectUri = "https://localhost/"
 
+  export let loggedIn = false
+
   let opened = false
   let redirectUri = ""
 
-  async function openUrl(){
+  onMount(async function () {
+    loggedIn = (await getToken()) != null
+  })
+
+  async function openUrl() {
     const url = new URL(AuthorizeUrl + AuthorizePath)
     const clientId: string = await invoke("client_id")
     url.searchParams.append("client_id", clientId)
@@ -42,10 +50,14 @@
         responseType: ResponseType.JSON
       }
     )
+    await putToken(response.data["access_token"])
+    loggedIn = true
   }
 </script>
 
 <div>
+  <h1>Piscatio</h1>
+
   <div class="row">
     {#if opened}
       <input type="text" bind:value={redirectUri} />
@@ -84,5 +96,10 @@ button:hover {
 input {
   padding: 8px;
   margin-right: 16px;
+}
+
+h1 {
+  text-align: center;
+  margin-bottom: 36px;
 }
 </style>
