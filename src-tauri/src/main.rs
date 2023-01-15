@@ -19,6 +19,7 @@ fn client_secret() -> String {
 fn main() {
     dotenv().ok();
     tauri::Builder::default()
+        .plugin(tauri_plugin_store::Builder::default().build())
         .invoke_handler(tauri::generate_handler![client_id, client_secret])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
