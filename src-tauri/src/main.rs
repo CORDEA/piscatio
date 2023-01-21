@@ -6,7 +6,9 @@
 #[macro_use] extern crate rocket;
 
 use dotenv::dotenv;
+use rocket::State;
 use std::env;
+use tauri::Manager;
 
 #[tauri::command]
 fn client_id() -> String {
@@ -19,15 +21,18 @@ fn client_secret() -> String {
 }
 
 #[get("/login?<code>")]
-fn login(code: &str) -> () {
+fn login(code: &str, state: &State<tauri::AppHandle>) -> () {
+    state.emit_all("login-code", code).unwrap();
 }
 
 fn main() {
     dotenv().ok();
     tauri::Builder::default()
         .setup(|app| {
+            let handle = app.handle();
             tauri::async_runtime::spawn(
                 rocket::build()
+                    .manage(handle)
                     .mount("/", routes![login])
                     .launch()
             );

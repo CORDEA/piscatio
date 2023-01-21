@@ -1,5 +1,6 @@
 <script lang="ts">
   import { invoke } from "@tauri-apps/api/tauri"
+  import { listen } from "@tauri-apps/api/event"
   import { open } from "@tauri-apps/api/shell"
   import { Body, getClient, ResponseType } from "@tauri-apps/api/http"
   import { onMount } from "svelte";
@@ -8,12 +9,11 @@
   const AuthorizeUrl = "https://api.instagram.com/"
   const AuthorizePath = "oauth/authorize"
   const AccessTokenPath = "oauth/access_token"
-  const RedirectUri = "https://localhost/"
+  const RedirectUri = "https://localhost:8000/login"
 
   export let loggedIn = false
 
   let opened = false
-  let redirectUri = ""
 
   onMount(async function () {
     loggedIn = (await getToken()) != null
@@ -28,11 +28,15 @@
     url.searchParams.append("response_type", "code")
     await open(url.toString())
     opened = true;
+    await listen("login-code", function (event) {
+      const code = event.payload
+      if (typeof code === "string") {
+        login(code)
+      }
+    })
   }
 
-  async function login() {
-    const url = new URL(redirectUri)
-    const code = url.searchParams.get("code")
+  async function login(code: string) {
     const clientId: string = await invoke("client_id")
     const clientSecret: string = await invoke("client_secret")
     const client = await getClient()
@@ -60,11 +64,7 @@
 
   <div class="row">
     {#if opened}
-      <input type="text" bind:value={redirectUri} />
-
-      <button on:click={login}>
-        Log in
-      </button>
+      <h3>Waiting...</h3>
     {:else}
       <button on:click={openUrl}>
         Start
