@@ -6,13 +6,11 @@
 </script>
 
 <main class="container">
-  <div class="row">
-    {#if loggedIn}
-      <Home />
-    {:else}
-      <Login bind:loggedIn={loggedIn} />
-    {/if}
-  </div>
+  {#if loggedIn}
+    <Home />
+  {:else}
+    <Login bind:loggedIn={loggedIn} />
+  {/if}
 </main>
 
 <style>

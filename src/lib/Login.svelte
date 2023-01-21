@@ -74,28 +74,9 @@
 </div>
 
 <style>
-button {
-  border-radius: 8px;
-  border: 1px solid transparent;
-  padding: 0.6em 1.2em;
-  font-size: 1em;
-  font-weight: 500;
-  font-family: inherit;
-  color: #0f0f0f;
-  background-color: #ffffff;
-  transition: border-color 0.25s;
-  box-shadow: 0 2px 2px rgba(0, 0, 0, 0.2);
-  cursor: pointer;
-  outline: none;
-}
-
-button:hover {
-  border-color: #396cd8;
-}
-
-input {
-  padding: 8px;
-  margin-right: 16px;
+.row {
+  display: flex;
+  justify-content: center;
 }
 
 h1 {
