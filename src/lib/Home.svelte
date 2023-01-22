@@ -1,12 +1,14 @@
 <script lang="ts">
   import { getClient, ResponseType, Response } from "@tauri-apps/api/http"
-  import { onMount } from "svelte";
+  import { onMount, createEventDispatcher } from "svelte";
   import HomeItem from "./HomeItem.svelte";
   import type { MediaResponse } from "./Media";
-  import { getToken } from "./Store"
+  import { clearToken, getToken } from "./Store"
 
   const GraphApiUrl = "https://graph.instagram.com"
   const MediaPath = "/me/media"
+
+  const dispatch = createEventDispatcher()
 
   let items = []
 
@@ -25,9 +27,18 @@
     })
     items = response.data.data
   })
+
+  async function logout() {
+    await clearToken()
+    dispatch("loggedOut")
+  }
 </script>
 
 <div class="container">
+    <div class="header">
+        <button on:click={logout}>Logout</button>
+    </div>
+
     {#each items as item}
         <HomeItem media={item} />
     {/each}
@@ -36,5 +47,11 @@
 <style>
 .container {
     min-width: 600px;
+}
+
+.header {
+    display: flex;
+    justify-content: end;
+    margin-bottom: 16px;
 }
 </style>

@@ -2,12 +2,16 @@
   import Login from "./lib/Login.svelte"
   import Home from "./lib/Home.svelte"
 
-  let loggedIn = false;
+  let loggedIn = false
+
+  function onLoggedOut() {
+    loggedIn = false
+  }
 </script>
 
 <main class="container">
   {#if loggedIn}
-    <Home />
+    <Home on:loggedOut={onLoggedOut} />
   {:else}
     <Login bind:loggedIn={loggedIn} />
   {/if}

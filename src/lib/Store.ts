@@ -11,3 +11,7 @@ export function getToken(): Promise<string | null> {
 export async function putToken(token: string) {
     await store.set(TokenKey, token)
 }
+
+export async function clearToken() {
+    await store.delete(TokenKey)
+}
